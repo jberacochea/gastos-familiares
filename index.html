@@ -424,10 +424,14 @@ let payments = {};
 persons.forEach(p => payments[p] = 0);
 payments['Juan'] = 130;
 payments['Marta'] = 2100;
+payments['Negro'] = 10000;
+payments['José'] = 5000;
 
 const paymentHistory = [
+  { name: 'Negro', amount: 10000, date: '05 jun 2026' },
+  { name: 'José', amount: 5000, date: '05 jun 2026' },
   { name: 'Marta', amount: 2100, date: '05 jun 2026' },
-  { name: 'Juan', amount: 130, date: '20 may 2026' }
+  { name: 'Juan', amount: 130, date: '05 jun 2026' }
 ];
 
 function fmt(n) {
