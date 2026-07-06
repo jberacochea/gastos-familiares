@@ -319,6 +319,8 @@ button.add-btn:active{transform:scale(.97);}
 </head>
 <body>
 
+<canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+
 <!-- ── HEADER ── -->
 <div class="header">
   <div class="mama-wrap" onclick="showMamaBubble()">
@@ -635,6 +637,67 @@ function registerPayment(){
   renderOverall();
   showToast('✓ '+fmt(amt)+' registrado para '+name);
 }
+
+// ── CONFETTI ──
+const confCanvas = document.getElementById('confettiCanvas');
+const confCtx = confCanvas.getContext('2d');
+let confParticles = [];
+let confAnim = null;
+
+function launchConfetti(){
+  confCanvas.width = window.innerWidth;
+  confCanvas.height = window.innerHeight;
+  confParticles = [];
+  const colors = ['#e8c547','#ff6b6b','#6c63ff','#10b981','#ec4899','#3b82f6','#fff','#f59e0b'];
+  for(let i=0;i<180;i++){
+    confParticles.push({
+      x: Math.random()*confCanvas.width,
+      y: Math.random()*confCanvas.height - confCanvas.height,
+      w: Math.random()*10+5,
+      h: Math.random()*6+3,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rot: Math.random()*360,
+      rotSpeed: (Math.random()-0.5)*6,
+      vx: (Math.random()-0.5)*3,
+      vy: Math.random()*4+3,
+      opacity: 1
+    });
+  }
+  if(confAnim) cancelAnimationFrame(confAnim);
+  let frames = 0;
+  function draw(){
+    confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+    confParticles.forEach(p=>{
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      if(frames > 90) p.opacity -= 0.012;
+      confCtx.save();
+      confCtx.globalAlpha = Math.max(0, p.opacity);
+      confCtx.translate(p.x, p.y);
+      confCtx.rotate(p.rot*Math.PI/180);
+      confCtx.fillStyle = p.color;
+      confCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      confCtx.restore();
+    });
+    frames++;
+    confParticles = confParticles.filter(p=>p.opacity>0&&p.y<confCanvas.height+20);
+    if(confParticles.length>0) confAnim = requestAnimationFrame(draw);
+    else confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+  }
+  draw();
+}
+
+// Override showBubble to add confetti for Rosario at 100%
+const _origShowBubble = showBubble;
+window.showBubble = function(name){
+  _origShowBubble(name);
+  if(name === 'Rosario' && pct(payments['Rosario']) >= 100){
+    launchConfetti();
+    // burst again after bubble opens
+    setTimeout(launchConfetti, 600);
+  }
+};
 
 // Init
 paymentHistory.forEach(h=>addHistoryItem(h.name,h.amount,h.date));
