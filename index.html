@@ -439,8 +439,10 @@ payments['Juan'] = 130;
 payments['Marta'] = 2100;
 payments['Negro'] = 10000;
 payments['José'] = 5000;
+payments['Rosario'] = 26109;
 
 const paymentHistory = [
+  { name:'Rosario', amount:26109, date:'06 jul 2026' },
   { name:'Negro',   amount:10000, date:'05 jun 2026' },
   { name:'José',    amount:5000,  date:'05 jun 2026' },
   { name:'Marta',   amount:2100,  date:'05 jun 2026' },
@@ -482,6 +484,12 @@ function getSiblingPhrase(name, pctVal){
     `¡El final está a la vuelta! ${fmt(payments[name])} aportados 🔝`,
     `${pctVal.toFixed(0)}% completado. ¡El 100% es mío! 😤`
   ][Math.floor(Math.random()*3)];
+  if(name === 'Rosario') return [
+    `¡¡PAGUÉ TODO!! 🏆 ¿Y los demás? Los espero sentada... 😏`,
+    `100% completado 🎊 ¡Primera en llegar! ¿Alguien me aplaude? 👏`,
+    `¡Misión cumplida! 💅 Mientras tanto los otros... bueno. 😂🥇`,
+    `¡Todo pagado! Rosario no falla 💪🎉 ¡La mejor hermana del mundo!`
+  ][Math.floor(Math.random()*4)];
   return [
     `¡LISTO! 100% cumplido 🎉🎊 ¡Misión completa!`,
     `¡Terminé! Pagué todo. ¿Alguien me debe un asado? 🥩🎉`,
